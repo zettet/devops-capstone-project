@@ -57,11 +57,14 @@ def create_accounts():
         jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
     )
 
+
 ######################################################################
 # LIST ALL ACCOUNTS
 ######################################################################
-# List should use the Account.all() method to return all of the accounts as a list of dict and return the HTTP_200_OK return code.
-# It should never send back a 404_NOT_FOUND. If you do not find any accounts, send back an empty list ([]) and 200_OK.
+# List should use the Account.all() method to return all of the accounts as a list of dict and
+# return the HTTP_200_OK return code.
+# It should never send back a 404_NOT_FOUND. If you do not find any accounts, send back an
+# empty list ([]) and 200_OK.
 @app.route("/accounts", methods=["GET"])
 def list_accounts():
     app.logger.info("Request to list all accounts")
@@ -69,16 +72,19 @@ def list_accounts():
 
     response_list = []
     for account in accounts:
-        response_list.append(account.serialize())    
+        response_list.append(account.serialize())
 
     return make_response(jsonify(response_list), status.HTTP_200_OK)
+
 
 ######################################################################
 # READ AN ACCOUNT
 ######################################################################
 # Read should accept an account_id and use Account.find() to find the account.
 # It should return a HTTP_404_NOT_FOUND if the account cannot be found.
-# If the account is found, it should call the serialize() method on the account instance and return a Python dictionary with a return code of HTTP_200_OK.
+# If the account is found, it should call the serialize() method on the account instance and return a
+# Python dictionary with a return code of HTTP_200_OK.
+
 @app.route("/account/<account_id>", methods=["GET"])
 def read_account_id(account_id):
     app.logger.info("Request to read an Account with id: %s", account_id)
@@ -88,13 +94,16 @@ def read_account_id(account_id):
 
     return make_response(jsonify(account.serialize()), status.HTTP_200_OK)
 
+
 ######################################################################
 # UPDATE AN EXISTING ACCOUNT
 ######################################################################
 # Update should accept an account_id and use Account.find() to find the account.
 # It should return a HTTP_404_NOT_FOUND if the account cannot be found.
-# If the account is found, it should call the deserialize() method on the account instance passing in request.get_json() and call the update() method to update the account in the database.
-# It should call the serialize() method on the account instance and return a Python dictionary with a return code of HTTP_200_OK.
+# If the account is found, it should call the deserialize() method on the account instance passing in
+# request.get_json() and call the update() method to update the account in the database.
+# It should call the serialize() method on the account instance and return a Python dictionary with a
+# return code of HTTP_200_OK.
 @app.route("/account/<account_id>", methods=["PUT"])
 def update_account(account_id):
     app.logger.info("Request to update an Account with id: %s", account_id)
@@ -107,12 +116,14 @@ def update_account(account_id):
     account.update()
     return make_response(jsonify(account.serialize()), status.HTTP_200_OK)
 
+
 ######################################################################
 # DELETE AN ACCOUNT
 ######################################################################
 # Delete should accept an account_id and use Account.find() to find the account.
 # If the account is not found, it should do nothing.
-# If the account is found, it should call the delete() method on the account instance to delete it from the database.
+# If the account is found, it should call the delete() method on the account instance
+# to delete it from the database.
 # It should return an empty body "" with a return code of HTTP_204_NO_CONTENT.
 @app.route("/account/<account_id>", methods=["DELETE"])
 def delete_account(account_id):
@@ -122,14 +133,12 @@ def delete_account(account_id):
         account.delete()
         return make_response(jsonify(account.serialize()), status.HTTP_200_OK)
     else:
-        return make_response(jsonify(""), status.HTTP_200_OK)    
-        
+        return make_response(jsonify(""), status.HTTP_200_OK)
+
 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################
-
-
 def check_content_type(media_type):
     """Checks that the media type is correct"""
     content_type = request.headers.get("Content-Type")
