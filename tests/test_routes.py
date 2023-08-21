@@ -166,8 +166,6 @@ class TestAccountService(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.get_json()), 5)
 
-        print(response)
-
     def assert_account(self, actual_account, expected_account):
         self.assertEqual(actual_account["name"], expected_account.name)
         self.assertEqual(actual_account["email"], expected_account.email)
