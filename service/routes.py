@@ -96,8 +96,16 @@ def read_account_id(account_id):
 # If the account is found, it should call the deserialize() method on the account instance passing in request.get_json() and call the update() method to update the account in the database.
 # It should call the serialize() method on the account instance and return a Python dictionary with a return code of HTTP_200_OK.
 @app.route("/account/<account_id>", methods=["PUT"])
-def read_account(account_id):
-    return make_response(jsonify(""), status.HTTP_501_NOT_IMPLEMENTED)
+def update_account(account_id):
+    app.logger.info("Request to update an Account with id: %s", account_id)
+    account = Account.find(account_id)
+    if not account:
+        return make_response(jsonify(""), status.HTTP_404_NOT_FOUND)
+
+    account = Account()
+    account.deserialize(request.get_json())
+    account.update()
+    return make_response(jsonify(account.serialize()), status.HTTP_200_OK)
 
 
 ######################################################################
