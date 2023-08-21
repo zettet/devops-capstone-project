@@ -64,7 +64,14 @@ def create_accounts():
 # It should never send back a 404_NOT_FOUND. If you do not find any accounts, send back an empty list ([]) and 200_OK.
 @app.route("/accounts", methods=["GET"])
 def list_accounts():
-    return make_response(jsonify(""), status.HTTP_501_NOT_IMPLEMENTED)
+    app.logger.info("Request to list all accounts")
+    accounts = Account.all()
+
+    response_list = []
+    for account in accounts:
+        response_list.append(account.serialize())    
+
+    return make_response(jsonify(response_list), status.HTTP_200_OK)
 
 ######################################################################
 # READ AN ACCOUNT
