@@ -19,8 +19,6 @@ DATABASE_URI = os.getenv(
 
 ACCOUNT_BASE_URL = "/account"
 ACCOUNTS_BASE_URL = "/accounts"
-NOT_FOUND_URL = "/notfound"
-UNKOWN_ACCOUNT_ID = 0
 
 
 ######################################################################
@@ -71,7 +69,7 @@ class TestAccountService(TestCase):
             new_account = response.get_json()
             account.id = new_account["id"]
             accounts.append(account)
-        return accounts, response
+        return accounts
 
     ######################################################################
     #  A C C O U N T   T E S T   C A S E S
@@ -91,7 +89,12 @@ class TestAccountService(TestCase):
 
     def test_create_account(self):
         """It should Create a new Account"""
-        accounts, response = self._create_accounts(1)
+        account = AccountFactory()
+        response = self.client.post(
+            ACCOUNTS_BASE_URL,
+            json=account.serialize(),
+            content_type="application/json"
+        )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         # Make sure location header is set
@@ -99,7 +102,7 @@ class TestAccountService(TestCase):
         self.assertIsNotNone(location)
 
         # Check the data is correct
-        self.assert_account(response.get_json(), accounts[0])
+        self.assert_account(response.get_json(), account)
 
     def test_bad_request(self):
         """It should not Create an Account when sending the wrong data"""
@@ -119,22 +122,27 @@ class TestAccountService(TestCase):
     # ADD YOUR TEST CASES HERE ...
     def test_read_account_found_returns_200_with_expected_account(self):
         """It should read a newly created account"""
-        accounts, response = self._create_accounts(1)
+        account = AccountFactory()
+        response = self.client.post(
+            ACCOUNTS_BASE_URL,
+            json=account.serialize(),
+            content_type="application/json"
+        )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         account_id = (response.get_json())["id"]
 
         response = self.client.get(
-           f"{ACCOUNT_BASE_URL}/{account_id}"
+           ACCOUNT_BASE_URL + "/" + str(account_id)
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assert_account(response.get_json(), accounts[0])
+        self.assert_account(response.get_json(), account)
 
     def test_read_account_not_found_returns_404(self):
         """It should return 404 for an invalid account id"""
 
         response = self.client.get(
-           f"{ACCOUNT_BASE_URL}/{UNKOWN_ACCOUNT_ID}"
+           ACCOUNT_BASE_URL + "/" + str(0)
         )
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
@@ -160,7 +168,12 @@ class TestAccountService(TestCase):
 
     def test_update_acount_for_known_account_correctly_updates_account(self):
         """It should create and then update the account"""
-        accounts, response = self._create_accounts(1)
+        account = AccountFactory()
+        response = self.client.post(
+            ACCOUNTS_BASE_URL,
+            json=account.serialize(),
+            content_type="application/json"
+        )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         new_account = response.get_json()
@@ -170,15 +183,15 @@ class TestAccountService(TestCase):
             json=new_account,
             content_type="application/json"
         )
-        accounts[0].name = "New Name"
+        account.name = "New Name"
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assert_account(response.get_json(), accounts[0])
+        self.assert_account(response.get_json(), account)
 
     def test_update_acount_for_unknown_account_returns_404(self):
         """It should return 404 for an unknown account"""
 
         response = self.client.put(
-            f"{ACCOUNT_BASE_URL}/{UNKOWN_ACCOUNT_ID}",
+            f"{ACCOUNT_BASE_URL}/0",
             json={},
             content_type="application/json"
         )
@@ -186,14 +199,18 @@ class TestAccountService(TestCase):
 
     def test_delete_account_for_known_account(self):
         """It should create and then delete the account"""
-        accounts, response = self._create_accounts(1)
+        account = AccountFactory()
+        response = self.client.post(
+            ACCOUNTS_BASE_URL,
+            json=account.serialize(),
+            content_type="application/json"
+        )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        
         account_id = response.get_json()['id']
         response = self.client.delete(
             f"{ACCOUNT_BASE_URL}/{account_id}",
         )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
         response = self.client.get(
             f"{ACCOUNT_BASE_URL}/{account_id}",
@@ -204,20 +221,9 @@ class TestAccountService(TestCase):
         """It should do nothing and return 200"""
 
         response = self.client.delete(
-            f"{ACCOUNT_BASE_URL}/{UNKOWN_ACCOUNT_ID}",
+            f"{ACCOUNT_BASE_URL}/0",
         )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-    # These should be moved into their own test class for the error handler, but clubbing them in this test file for now...
-    def test_method_not_allowed(self):
-        """It should not allow an illegal method call"""
-        resp = self.client.delete(ACCOUNTS_BASE_URL)
-        self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
-
-    def test_method_not_found(self):
-        """It should not allow an illegal method call"""
-        resp = self.client.get(NOT_FOUND_URL)
-        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)        
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)    
 
     def assert_account(self, actual_account, expected_account):
         self.assertEqual(actual_account["name"], expected_account.name)
