@@ -107,7 +107,6 @@ def update_account(account_id):
     account.update()
     return make_response(jsonify(account.serialize()), status.HTTP_200_OK)
 
-
 ######################################################################
 # DELETE AN ACCOUNT
 ######################################################################
@@ -117,7 +116,14 @@ def update_account(account_id):
 # It should return an empty body "" with a return code of HTTP_204_NO_CONTENT.
 @app.route("/account/<account_id>", methods=["DELETE"])
 def delete_account(account_id):
-    return make_response(jsonify(""), status.HTTP_501_NOT_IMPLEMENTED)
+    app.logger.info("Request to delete an Account with id: %s", account_id)
+    account = Account.find(account_id)
+    if account:
+        account.delete()
+        return make_response(jsonify(account.serialize()), status.HTTP_200_OK)
+    else:
+        return make_response(jsonify(""), status.HTTP_200_OK)    
+        
 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
