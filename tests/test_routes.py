@@ -19,6 +19,7 @@ DATABASE_URI = os.getenv(
 
 ACCOUNT_BASE_URL = "/account"
 ACCOUNTS_BASE_URL = "/accounts"
+NOT_FOUND_URL = "/notfound"
 UNKOWN_ACCOUNT_ID = 0
 
 
@@ -205,7 +206,18 @@ class TestAccountService(TestCase):
         response = self.client.delete(
             f"{ACCOUNT_BASE_URL}/{UNKOWN_ACCOUNT_ID}",
         )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)    
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    # These should be moved into their own test class for the error handler, but clubbing them in this test file for now...
+    def test_method_not_allowed(self):
+        """It should not allow an illegal method call"""
+        resp = self.client.delete(ACCOUNTS_BASE_URL)
+        self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_method_not_found(self):
+        """It should not allow an illegal method call"""
+        resp = self.client.get(NOT_FOUND_URL)
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)        
 
     def assert_account(self, actual_account, expected_account):
         self.assertEqual(actual_account["name"], expected_account.name)
