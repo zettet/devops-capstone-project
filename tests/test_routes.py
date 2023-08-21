@@ -197,6 +197,34 @@ class TestAccountService(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
+    def test_delete_account_for_known_account(self):
+        """It should create and then delete the account"""
+        account = AccountFactory()
+        response = self.client.post(
+            ACCOUNTS_BASE_URL,
+            json=account.serialize(),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        account_id = response.get_json()['id']
+        response = self.client.delete(
+            f"{ACCOUNT_BASE_URL}/{account_id}",
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get(
+            f"{ACCOUNT_BASE_URL}/{account_id}",
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_delete_account_for_unknown_account(self):
+        """It should do nothing and return 200"""
+
+        response = self.client.delete(
+            f"{ACCOUNT_BASE_URL}/0",
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)    
+
     def assert_account(self, actual_account, expected_account):
         self.assertEqual(actual_account["name"], expected_account.name)
         self.assertEqual(actual_account["email"], expected_account.email)
