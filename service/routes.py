@@ -74,7 +74,12 @@ def list_accounts():
 # If the account is found, it should call the serialize() method on the account instance and return a Python dictionary with a return code of HTTP_200_OK.
 @app.route("/account/<account_id>", methods=["GET"])
 def read_account_id(account_id):
-    return make_response(jsonify(""), status.HTTP_501_NOT_IMPLEMENTED)
+    app.logger.info("Request to read an Account with id: %s", account_id)
+    account = Account.find(account_id)
+    if not account:
+        return make_response(jsonify(""), status.HTTP_404_NOT_FOUND)
+
+    return make_response(jsonify(account.serialize()), status.HTTP_200_OK)
 
 ######################################################################
 # UPDATE AN EXISTING ACCOUNT
