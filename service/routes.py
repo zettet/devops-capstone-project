@@ -64,7 +64,7 @@ def create_accounts():
 # It should never send back a 404_NOT_FOUND. If you do not find any accounts, send back an empty list ([]) and 200_OK.
 @app.route("/accounts", methods=["GET"])
 def list_accounts():
-    return 501
+    return make_response(jsonify(""), status.HTTP_501_NOT_IMPLEMENTED)
 
 ######################################################################
 # READ AN ACCOUNT
@@ -73,8 +73,8 @@ def list_accounts():
 # It should return a HTTP_404_NOT_FOUND if the account cannot be found.
 # If the account is found, it should call the serialize() method on the account instance and return a Python dictionary with a return code of HTTP_200_OK.
 @app.route("/account/<account_id>", methods=["GET"])
-def read_account(account_id):
-    return 501
+def read_account_id(account_id):
+    return make_response(jsonify(""), status.HTTP_501_NOT_IMPLEMENTED)
 
 ######################################################################
 # UPDATE AN EXISTING ACCOUNT
@@ -85,7 +85,7 @@ def read_account(account_id):
 # It should call the serialize() method on the account instance and return a Python dictionary with a return code of HTTP_200_OK.
 @app.route("/account/<account_id>", methods=["PUT"])
 def read_account(account_id):
-    return 501
+    return make_response(jsonify(""), status.HTTP_501_NOT_IMPLEMENTED)
 
 
 ######################################################################
@@ -97,7 +97,7 @@ def read_account(account_id):
 # It should return an empty body "" with a return code of HTTP_204_NO_CONTENT.
 @app.route("/account/<account_id>", methods=["DELETE"])
 def delete_account(account_id):
-    return 501
+    return make_response(jsonify(""), status.HTTP_501_NOT_IMPLEMENTED)
 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
