@@ -60,7 +60,7 @@ class TestAccountService(TestCase):
         accounts = []
         for _ in range(count):
             account = AccountFactory()
-            response = self.client.post(BASE_URL, json=account.serialize())
+            response = self.client.post(ACCOUNTS_BASE_URL, json=account.serialize())
             self.assertEqual(
                 response.status_code,
                 status.HTTP_201_CREATED,
@@ -146,6 +146,27 @@ class TestAccountService(TestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_list_accounts_returns_accounts(self):
+        """It should return all accounts"""
+
+        response = self.client.get(
+            ACCOUNTS_BASE_URL
+        )
+
+        self.assertEqual(len(response.get_json()), 0)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self._create_accounts(5)
+
+        response = self.client.get(
+            ACCOUNTS_BASE_URL
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.get_json()), 5)
+
+        print(response)
 
     def assert_account(self, actual_account, expected_account):
         self.assertEqual(actual_account["name"], expected_account.name)
