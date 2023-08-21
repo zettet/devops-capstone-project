@@ -17,7 +17,8 @@ DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgresql://postgres:postgres@localhost:5432/postgres"
 )
 
-BASE_URL = "/accounts"
+ACCOUNT_BASE_URL = "/account"
+ACCOUNTS_BASE_URL = "/accounts"
 
 
 ######################################################################
@@ -90,7 +91,7 @@ class TestAccountService(TestCase):
         """It should Create a new Account"""
         account = AccountFactory()
         response = self.client.post(
-            BASE_URL,
+            ACCOUNTS_BASE_URL,
             json=account.serialize(),
             content_type="application/json"
         )
@@ -101,26 +102,54 @@ class TestAccountService(TestCase):
         self.assertIsNotNone(location)
 
         # Check the data is correct
-        new_account = response.get_json()
-        self.assertEqual(new_account["name"], account.name)
-        self.assertEqual(new_account["email"], account.email)
-        self.assertEqual(new_account["address"], account.address)
-        self.assertEqual(new_account["phone_number"], account.phone_number)
-        self.assertEqual(new_account["date_joined"], str(account.date_joined))
+        self.assert_account(response.get_json(), account)
 
     def test_bad_request(self):
         """It should not Create an Account when sending the wrong data"""
-        response = self.client.post(BASE_URL, json={"name": "not enough data"})
+        response = self.client.post(ACCOUNTS_BASE_URL, json={"name": "not enough data"})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_unsupported_media_type(self):
         """It should not Create an Account when sending the wrong media type"""
         account = AccountFactory()
         response = self.client.post(
-            BASE_URL,
+            ACCOUNTS_BASE_URL,
             json=account.serialize(),
             content_type="test/html"
         )
         self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
     # ADD YOUR TEST CASES HERE ...
+    def test_read_account_found_returns_200_with_expected_account(self):
+        """It should read a newly created account"""
+        account = AccountFactory()
+        response = self.client.post(
+            ACCOUNTS_BASE_URL,
+            json=account.serialize(),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        account_id = (response.get_json())["id"]
+
+        response = self.client.get(
+           ACCOUNT_BASE_URL + "/" + str(account_id)
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assert_account(response.get_json(), account)
+
+    def test_read_account_not_found_returns_404(self):
+        """It should return 404 for an invalid account id"""
+
+        response = self.client.get(
+           ACCOUNT_BASE_URL + "/" + str(0)
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def assert_account(self, actual_account, expected_account):
+        self.assertEqual(actual_account["name"], expected_account.name)
+        self.assertEqual(actual_account["email"], expected_account.email)
+        self.assertEqual(actual_account["address"], expected_account.address)
+        self.assertEqual(actual_account["phone_number"], expected_account.phone_number)
+        self.assertEqual(actual_account["date_joined"], str(expected_account.date_joined))    
