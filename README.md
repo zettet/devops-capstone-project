@@ -1,4 +1,4 @@
-# DevOps Capstone Template
+# DevOps Capstone
 
 ![Build Status](https://github.com/zettet/devops-capstone-project/actions/workflows/ci-build.yaml/badge.svg)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
@@ -7,16 +7,14 @@
 This repository contains the starter code for the project in [**IBM-CD0285EN-SkillsNetwork DevOps Capstone Project**](https://www.coursera.org/learn/devops-capstone-project?specialization=devops-and-software-engineering) which is part of the [**IBM DevOps and Software Engineering Professional Certificate**](https://www.coursera.org/professional-certificates/devops-and-software-engineering)
 
 ## Usage
-
-You should use this template to start your DevOps Capstone project. It contains all of the code that you will need to get started.
-
-Do Not fork this code! It is meant to be used by pressing the  <span style=color:white;background:green>**Use this Template**</span> button in GitHub. This will copy the code to your own repository with no connection back to the original repository like a fork would. This is what you want.
+```
+honcho start 
+```
+to start the server. runs on port 5000 by default
 
 ## Development Environment
 
-These labs are designed to be executed in the IBM Developer Skills Network Cloud IDE with OpenShift. Please use the links provided in the Coursera Capstone project to access the lab environment.
-
-Once you are in the lab environment, you can initialize it with `bin/setup.sh` by sourcing it. (*Note: DO NOT run this program as a bash script. It sets environment variable and so must be sourced*):
+You can initialize the development environment with `bin/setup.sh` by sourcing it. (*Note: DO NOT run this program as a bash script. It sets environment variable and so must be sourced*):
 
 ```bash
 source bin/setup.sh
@@ -27,7 +25,7 @@ This will install Python 3.9, make it the default, modify the bash prompt, creat
 After sourcing it you prompt should look like this:
 
 ```bash
-(venv) theia:project$
+(venv) project$
 ```
 
 ## Useful commands
@@ -91,10 +89,6 @@ The Account model contains the following fields:
 | phone_number | String(32) | True |
 | date_joined | Date | False |
 
-## Your Task
-
-Complete this microservice by implementing REST API's for `READ`, `UPDATE`, `DELETE`, and `LIST` while maintaining **95%** code coverage. In true **Test Driven Development** fashion, first write tests for the code you "wish you had", and then write the code to make them pass.
-
 ## Local Kubernetes Development
 
 This repo can also be used for local Kubernetes development. It is not advised that you run these commands in the Cloud IDE environment. The purpose of these commands are to simulate the Cloud IDE environment locally on your computer. 
@@ -124,8 +118,11 @@ Please only use these commands for working stand-alone on your own computer with
 You can now perform Tekton development locally, just like in the Cloud IDE lab environment.
 
 ## Author
-
+Initial Template from:
 [John Rofrano](https://www.coursera.org/instructor/johnrofrano), Senior Technical Staff Member, DevOps Champion, @ IBM Research, and Instructor @ Coursera
+
+Author:
+Trevor Zettersten
 
 ## License
 
