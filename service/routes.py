@@ -120,9 +120,9 @@ def delete_account(account_id):
     account = Account.find(account_id)
     if account:
         account.delete()
-        return make_response(jsonify(account.serialize()), status.HTTP_200_OK)
+        return make_response(jsonify(""), status.HTTP_204_NO_CONTENT)
     else:
-        return make_response(jsonify(""), status.HTTP_200_OK)    
+        return make_response(jsonify(""), status.HTTP_204_NO_CONTENT)    
         
 
 ######################################################################

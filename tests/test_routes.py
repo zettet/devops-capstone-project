@@ -210,7 +210,7 @@ class TestAccountService(TestCase):
         response = self.client.delete(
             f"{ACCOUNT_BASE_URL}/{account_id}",
         )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
         response = self.client.get(
             f"{ACCOUNT_BASE_URL}/{account_id}",
@@ -223,7 +223,7 @@ class TestAccountService(TestCase):
         response = self.client.delete(
             f"{ACCOUNT_BASE_URL}/0",
         )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)    
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)    
 
     def assert_account(self, actual_account, expected_account):
         self.assertEqual(actual_account["name"], expected_account.name)
