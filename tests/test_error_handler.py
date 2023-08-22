@@ -19,6 +19,7 @@ DATABASE_URI = os.getenv(
 NOT_FOUND_URL = "/unknown"
 ACCOUNTS_BASE_URL = "/accounts"
 
+
 ######################################################################
 #  T E S T   C A S E S
 ######################################################################
@@ -47,4 +48,4 @@ class TestErrorHandler(TestCase):
     def test_method_not_found(self):
         """It should not allow an illegal method call"""
         resp = self.client.get(NOT_FOUND_URL)
-        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)        
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
