@@ -23,6 +23,7 @@ ACCOUNTS_BASE_URL = "/accounts"
 UNKNOWN_ACCOUNT_ID = 0
 HTTPS_ENVIRON = {'wsgi.url_scheme': 'https'}
 
+
 ######################################################################
 #  T E S T   C A S E S
 ######################################################################
@@ -205,7 +206,7 @@ class TestAccountService(TestCase):
         response = self.client.delete(
             f"{ACCOUNT_BASE_URL}/0",
         )
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)    
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_security_headers(self):
         """It should return security headers"""
@@ -225,11 +226,11 @@ class TestAccountService(TestCase):
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Check for the CORS header
-        self.assertEqual(response.headers.get('Access-Control-Allow-Origin'), '*')            
+        self.assertEqual(response.headers.get('Access-Control-Allow-Origin'), '*')
 
     def assert_account(self, actual_account, expected_account):
         self.assertEqual(actual_account["name"], expected_account.name)
         self.assertEqual(actual_account["email"], expected_account.email)
         self.assertEqual(actual_account["address"], expected_account.address)
         self.assertEqual(actual_account["phone_number"], expected_account.phone_number)
-        self.assertEqual(actual_account["date_joined"], str(expected_account.date_joined))    
+        self.assertEqual(actual_account["date_joined"], str(expected_account.date_joined))
